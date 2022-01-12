@@ -5,17 +5,21 @@ import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../protoc
 export class SignUpController implements Controller {
   constructor (private readonly emailValidator: EmailValidator) {}
 
-  handle (httpRequest: HttpRequest): HttpResponse {
+  handle ({ body }: HttpRequest): HttpResponse {
     try {
       const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
 
       for (const field of requiredFields) {
-        if (!httpRequest.body[field]) {
+        if (!body[field]) {
           return badRequest(new MissingParamError(field))
         }
       }
 
-      const isValid = this.emailValidator.isValid(httpRequest.body.email)
+      if (body.password !== body.passwordConfirmation) {
+        return badRequest(new InvalidParamError('passwordConfirmation'))
+      }
+
+      const isValid = this.emailValidator.isValid(body.email)
 
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
