@@ -9,6 +9,7 @@ const makeFakeAccount = (): AccountModel => ({
   email: 'valid_email@mail.com',
   password: 'valid_password'
 })
+
 const makeFakeResquest = (): HttpRequest => ({
   body: {
     name: 'any_name',
